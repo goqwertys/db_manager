@@ -1,10 +1,12 @@
 import pytest
 import requests
-from unittest.mock import MagicMock
+import psycopg2
+from unittest.mock import MagicMock, patch
 
 from src.hh_api_client import HHAPIClient
+from src.utils import create_database
 
-
+# TEST HHAPIClient
 @pytest.fixture
 def mock_requests(monkeypatch):
     """Mocking requests.get to return predefined responses."""
@@ -40,3 +42,21 @@ def mock_requests(monkeypatch):
 def hh_api_client():
     """Fixture to create an instance of HHAPIClient."""
     return HHAPIClient()
+
+
+# FIXTURES - src.utils.create_database()
+...
+
+# FIXTURES - src.utils.read_db_config()
+@pytest.fixture
+def temp_config_file(tmp_path):
+    config_content = """
+    [postgres]
+    host = localhost
+    port = 5432
+    user = test_user
+    password = test_password
+    """
+    config_file = tmp_path / "test_config.ini"
+    config_file.write_text(config_content)
+    return str(config_file)
