@@ -1,3 +1,4 @@
+import json
 from configparser import ConfigParser, NoSectionError, NoOptionError, MissingSectionHeaderError
 
 import psycopg2
@@ -123,3 +124,22 @@ def read_db_config(config_file: str) -> dict[str, str]:
     except (FileNotFoundError, NoSectionError, NoOptionError, MissingSectionHeaderError) as e:
         logger.error(f'Error reading config file: {e}')
         return {}
+
+def read_employers_list(file_path: str) -> list[int]:
+    """ Reads and returns list of integers in specified file """
+    try:
+        logger.info(f'Reading file: {file_path}')
+
+        with open(file_path, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+            if isinstance(data, list) and all(isinstance(item, int) for item in data):
+                logger.info(f'Successfully read file: {file_path}')
+
+                return data
+            else:
+                logger.error("Error: JSON file must contain a list of integers.")
+                raise ValueError('JSON-file must contain a list of integers')
+
+    except (FileNotFoundError, json.JSONDecodeError, ValueError) as e:
+        logger.error(f'An error has occurred: {e}')
+        return []
