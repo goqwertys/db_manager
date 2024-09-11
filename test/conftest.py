@@ -1,3 +1,5 @@
+import json
+
 import pytest
 import requests
 import psycopg2
@@ -45,7 +47,7 @@ def hh_api_client():
 
 
 # FIXTURES - src.utils.create_database()
-...
+
 
 # FIXTURES - src.utils.read_db_config()
 @pytest.fixture
@@ -60,3 +62,12 @@ def temp_config_file(tmp_path):
     config_file = tmp_path / "test_config.ini"
     config_file.write_text(config_content)
     return str(config_file)
+
+# FIXTURES - src.utils.read_employers_list()
+@pytest.fixture
+def temp_json_file(tmp_path):
+    data = [1, 2, 3, 4, 5]
+    file_path = tmp_path / 'numbers.json'
+    with open(file_path, 'w', encoding='utf-8') as file:
+        json.dump(data, file)
+    return file_path
