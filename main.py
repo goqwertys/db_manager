@@ -1,3 +1,4 @@
+import json
 import logging
 
 from src.config import LOG_LEVEL
@@ -38,7 +39,10 @@ def main() -> bool:
         logger.info('Loading vacancies from employers')
         hh_client.load_vacancy_by_emp_id(employers_list)
 
-        #
+        # TEMP
+        data = hh_client.get_info()
+        with open(root_join('data', 'tmp_json.json')) as f:
+            json.dump(data, f, indent=4)
 
 
     except Exception as e:
@@ -57,6 +61,7 @@ def main() -> bool:
         user_input = input()
 
         if user_input.lower() == 'ext':
+            logger.info('Terminating the program')
             return True
 
         elif user_input.lower() == 'cvcount':
