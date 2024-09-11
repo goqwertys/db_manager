@@ -1,7 +1,9 @@
 import logging
 
-from src.config import LOG_LEVEL, read_db_config
+from src.config import LOG_LEVEL
+from src.hh_api_client import HHAPIClient
 from src.paths import root_join
+from src.utils import read_employers_list, read_db_config
 
 # Logger setup
 logger = logging.getLogger(__name__)
@@ -21,13 +23,27 @@ def main() -> bool:
 
         logger.info('Params successfully received')
 
+        # Get a list of saved employers to work with
+
+        emp_ids_path = root_join('data', 'employer_ids.json')
+        logger.info(f'Reading employers ids from {emp_ids_path}')
+        employers_list = read_employers_list(emp_ids_path)
+
+        logger.info(f'IDs is {employers_list}')
+
+        # Creating HH API Client
+        logger.info('Creating hh.ru API Client')
+        hh_client = HHAPIClient()
+
+        logger.info('Loading vacancies from employers')
+        hh_client.load_vacancy_by_emp_id(employers_list)
+
+        #
+
+
     except Exception as e:
         logger.error(f'An error has occured: {e}')
         return False
-
-    #TODO
-
-    #TODO
 
     while True:
         print("""Please enter the following characters to:
