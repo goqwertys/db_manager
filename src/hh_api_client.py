@@ -10,7 +10,7 @@ from src.config import LOG_LEVEL
 logger = logging.getLogger(__name__)
 logger.setLevel(LOG_LEVEL)
 log_path = root_join('logs', f'{__name__}.log')
-fh = logging.FileHandler(log_path, mode='w')
+fh = logging.FileHandler(log_path, mode='w', encoding='utf-8')
 formatter = logging.Formatter('%(asctime)s - %(module)s - %(levelname)s - %(message)s')
 fh.setFormatter(formatter)
 logger.addHandler(fh)
@@ -104,8 +104,10 @@ class HHAPIClient(APIClient):
 
     def get_areas(self):
         """ Returns a dict of areas in fetched data """
+        logger.info('Getting areas...')
         areas = {}
         for vacancy in self.data:
+            logger.info(f'Getting areas from {vacancy}')
             area = vacancy.get('area')
             area_id = area.get('id')
             if area_id not in areas:
@@ -117,8 +119,10 @@ class HHAPIClient(APIClient):
 
     def get_employers(self):
         """ Returns a dict of employers in fetched data """
+        logger.info('Getting employers...')
         employers = {}
         for vacancy in self.data:
+            logger.info(f'Getting employers from {vacancy}')
             employer = vacancy.get('employer')
             employer_id = employer.get('id')
             if employer_id not in employers:
@@ -132,8 +136,10 @@ class HHAPIClient(APIClient):
 
     def get_vacancies(self):
         """ Returns a list of employers in fetched data """
+        logger.info('Getting vacancies...')
         vacancies_list = []
         for vacancy in self.data:
+            logger.info(f'Getting vacancy from {vacancy}')
             vacancies_list.append(
                 {
                     'id': int(vacancy.get('id')),
