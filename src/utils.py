@@ -57,7 +57,6 @@ def create_database(database_name: str, params: dict):
                     CREATE TABLE employers (
                         employer_id INTEGER PRIMARY KEY,
                         employer_name TEXT NOT NULL,
-                        employer_area INTEGER REFERENCES areas(area_id),
                         url TEXT,
                         open_vacancies INTEGER
                     );
@@ -125,7 +124,6 @@ def save_to_database(areas: dict, employers: dict, vacancies: list, dbname: str,
                         (
                             employer_id,
                             employer_data.get('name'),
-                            employer_data.get('area_id'),
                             employer_data.get('url'),
                             employer_data.get('open_vacancies')
                         )

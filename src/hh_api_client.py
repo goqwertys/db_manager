@@ -1,3 +1,5 @@
+from math import frexp
+
 import requests
 import logging
 
@@ -104,10 +106,10 @@ class HHAPIClient(APIClient):
 
     def get_areas(self):
         """ Returns a dict of areas in fetched data """
-        logger.info('Getting areas...')
+        logger.debug('Getting areas...')
         areas = {}
         for vacancy in self.data:
-            logger.info(f'Getting areas from {vacancy}')
+            logger.debug(f'Getting areas from {vacancy}')
             area = vacancy.get('area')
             area_id = area.get('id')
             if area_id not in areas:
@@ -122,13 +124,20 @@ class HHAPIClient(APIClient):
         logger.info('Getting employers...')
         employers = {}
         for vacancy in self.data:
-            logger.info(f'Getting employers from {vacancy}')
+            logger.debug(f'Getting employers from {vacancy}')
+
+            logger.debug(f'Getting employer...')
             employer = vacancy.get('employer')
+
+            logger.debug(f'Getting id...')
             employer_id = employer.get('id')
+
             if employer_id not in employers:
+                logger.debug('Getting employer info...')
+                logger.debug(f"Getting employer's name {employer.get('name')}")
+                logger.debug(f"Getting employer's url {employer.get('url')}")
                 employers[employer_id] = {
                     'name': employer.get('name'),
-                    'area_id': int(employer.get('area').get('id')),
                     'url': employer.get('url'),
                     'open_vacancies': 0
                 }
@@ -139,13 +148,20 @@ class HHAPIClient(APIClient):
         logger.info('Getting vacancies...')
         vacancies_list = []
         for vacancy in self.data:
-            logger.info(f'Getting vacancy from {vacancy}')
+            logger.debug(f'Getting vacancy info from {vacancy}')
+            logger.debug(f"Getting vacancy id {int(vacancy.get('id'))}")
+            logger.debug(f"Getting vacancy name {vacancy.get('name')}")
+            logger.debug(f"Getting vacancy area id {vacancy.get('area_id')}")
+            logger.debug(f"Getting vacancy salary {vacancy.get('salary', {'from': 0}).get('from')}")
+            logger.debug(f"Getting vacancy employer {vacancy.get('employer').get('id')}")
+            logger.debug(f"Getting vacancy employer {vacancy.get('url')}")
+
             vacancies_list.append(
                 {
                     'id': int(vacancy.get('id')),
                     'name': vacancy.get('name'),
-                    'area_id': int(vacancy.get('area').get('id')),
-                    'salary': vacancy.get('salary').get('from'),
+                    'area_id': int(vacancy.get('area', {'id': None}).get('id')),
+                    'salary': vacancy.get('salary', {'from': 0}).get('from'),
                     'employer_id': id(vacancy.get('employer').get('id')),
                     'url': vacancy.get('url')
                 }
