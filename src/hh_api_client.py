@@ -26,7 +26,7 @@ class HHAPIClient(APIClient):
             'per_page': 100,  # Number of vacancies on one page
             'page': 0  # Initial page
         }
-        self.vacancies = []
+        self.data = []
 
     def load_vacancy_by_emp_id(self, employer_id):
         """ Loads vacancies by a single employer_id """
@@ -49,7 +49,7 @@ class HHAPIClient(APIClient):
                 response.raise_for_status()
                 data = response.json()
                 vacancies = data['items']
-                self.vacancies.extend(vacancies)
+                self.data.extend(vacancies)
 
                 logger.debug(f"Loaded {len(vacancies)} vacancies for employer ID: {employer_id}")
 
@@ -100,4 +100,47 @@ class HHAPIClient(APIClient):
 
     def get_info(self):
         logger.info("Getting loaded vacancies")
-        return self.vacancies
+        return self.data
+
+    def get_areas(self):
+        """ Returns a dict of areas in fetched data """
+        areas = {}
+        for vacancy in self.data:
+            area = vacancy.get('area')
+            area_id = area.get('id')
+            if area_id not in areas:
+                areas[area_id] = {
+                    'name': area.get('name'),
+                    'url': area.get('url')
+                }
+        return areas
+
+    def get_employers(self):
+        """ Returns a dict of employers in fetched data """
+        employers = {}
+        for vacancy in self.data:
+            employer = vacancy.get('employer')
+            employer_id = employer.get('id')
+            if employer_id not in employers:
+                employers[employer_id] = {
+                    'name': employer.get('name'),
+                    'area_id': int(employer.get('area').get('id')),
+                    'url': employer.get('url'),
+                    'open_vacancies': 0
+                }
+
+    def get_vacancies(self):
+        """ Returns a list of employers in fetched data """
+        vacancies_list = []
+        for vacancy in self.data:
+            vacancies_list.append(
+                {
+                    'id': int(vacancy.get('id')),
+                    'name': vacancy.get('name'),
+                    'area_id': int(vacancy.get('area').get('id')),
+                    'salary': vacancy.get('salary').get('from'),
+                    'employer_id': id(vacancy.get('employer').get('id')),
+                    'url': vacancy.get('url')
+                }
+            )
+        return vacancies_list

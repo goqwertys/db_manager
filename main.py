@@ -48,8 +48,8 @@ def main() -> bool:
         file_path = root_join('data', 'tmp_json.json')
         if not os.path.exists(file_path):
             Path(file_path).touch()
-        with open(file_path, 'w') as f:
-            json.dump(data, f, indent=4)
+        with open(file_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
 
 
     except Exception as e:
