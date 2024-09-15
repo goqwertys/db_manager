@@ -93,9 +93,85 @@ def create_database(database_name: str, params: dict):
 
     return True
 
-def save_to_database():
+def save_to_database(areas: dict, employers: dict, vacancies: list, params: dict):
     """ Save data to database """
-    pass
+    try:
+        logger.info('Starting to save data to the database')
+
+        with psycopg2.connect(**params) as conn:
+            conn.autocommit = True
+            with conn.cursor() as cur:
+
+                logger.info('Saving areas...')
+
+                for area_id, area_data in areas.items():
+                    cur.execute(
+                        """
+                        INSERT INTO areas (area_id, name, url)
+                        VALUES (%s, %s, %s)
+                        """,
+                        (
+                            area_id,
+                            area_data.get('name'),
+                            area_data.get('url')
+                        )
+                    )
+
+                logger.info('Saving employers...')
+
+                for employer_id, employer_data in employers.items():
+                    cur.execute(
+                        """
+                        INSERT INTO employers (employer_id, employer_name, employer_area, url)
+                        VALUES (%s, %s, %s, %s, %s)
+                        """,
+                        (
+                            employer_id,
+                            employer_data.get('name'),
+                            employer_data.get('area_id'),
+                            employer_data.get('url'),
+                            employer_data.get('open_vacancies')
+                        )
+                    )
+
+                logger.info('Saving vacancies...')
+
+                for vacancy_item in vacancies:
+                    cur.execute(
+                        """
+                        INSERT INTO vacancies (vacancy_id, vacancy_name, vacancy_area, salary, employer_id, vacancy_url)
+                        VALUES (%s, %s, %s, %s, %s, %s)
+                        """,
+                        (
+                            vacancy_item.get('id'),
+                            vacancy_item.get('name'),
+                            vacancy_item.get('area_id'),
+                            vacancy_item.get('salary'),
+                            vacancy_item.get('employer_id'),
+                            vacancy_item.get('url'),
+                        )
+                    )
+
+                logger.info('Updating open vacancies count...')
+
+                cur.execute(
+                    """
+                    UPDATE employers
+                    SET open vacancies = subquery.vacancy_count
+                    FROM (
+                        SELECT employer_id, COUNT (*) as vacancy_count
+                        FROM vacancies
+                        GROUP BY employer_id
+                    ) AS subquery
+                    WHERE employers.employer_id = subquery.employer_id
+                    """
+                )
+
+    except psycopg2.Error as e:
+        logger.error(f'Error saving data: {e}')
+        return False
+
+    return True
 
 
 def read_db_config(config_file: str) -> dict[str, str]:
