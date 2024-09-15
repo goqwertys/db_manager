@@ -1,5 +1,7 @@
 import json
 import logging
+import os
+from pathlib import Path
 
 from src.config import LOG_LEVEL
 from src.hh_api_client import HHAPIClient
@@ -37,11 +39,16 @@ def main() -> bool:
         hh_client = HHAPIClient()
 
         logger.info('Loading vacancies from employers')
-        hh_client.load_vacancy_by_emp_id(employers_list)
+        hh_client.load_vacancies_by_emp_ids(employers_list)
 
         # TEMP
         data = hh_client.get_info()
-        with open(root_join('data', 'tmp_json.json')) as f:
+
+        # dumping temp data
+        file_path = root_join('data', 'tmp_json.json')
+        if not os.path.exists(file_path):
+            Path(file_path).touch()
+        with open(file_path, 'w') as f:
             json.dump(data, f, indent=4)
 
 
