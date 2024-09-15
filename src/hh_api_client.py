@@ -128,6 +128,7 @@ class HHAPIClient(APIClient):
                     'url': employer.get('url'),
                     'open_vacancies': 0
                 }
+        return employers
 
     def get_vacancies(self):
         """ Returns a list of employers in fetched data """

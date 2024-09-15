@@ -28,19 +28,18 @@ def create_database(database_name: str, params: dict):
             with conn.cursor() as cur:
                 # Drop the database if it already exists
                 logger.info(f"Dropping database '{database_name}' if it exists")
-
                 cur.execute(f'DROP DATABASE IF EXISTS {database_name};')
+
                 # Create the new database
                 logger.info(f"Creating database '{database_name}'")
-
                 cur.execute(f'CREATE DATABASE {database_name};')
 
         # Connect to the newly created database
         with psycopg2.connect(dbname=database_name, **params) as conn:
+            conn.autocommit = False
             with conn.cursor() as cur:
                 # Create table areas
                 logger.info("Creating table 'areas'")
-
                 cur.execute(
                     """
                     CREATE TABLE areas (
@@ -53,7 +52,6 @@ def create_database(database_name: str, params: dict):
 
                 # Create table employers
                 logger.info("Creating table 'employers'")
-
                 cur.execute(
                     """
                     CREATE TABLE employers (
@@ -68,7 +66,6 @@ def create_database(database_name: str, params: dict):
 
                 # Create table vacancies
                 logger.info("Creating table 'vacancies'")
-
                 cur.execute(
                     """
                     CREATE TABLE vacancies (
@@ -93,12 +90,12 @@ def create_database(database_name: str, params: dict):
 
     return True
 
-def save_to_database(areas: dict, employers: dict, vacancies: list, params: dict):
+def save_to_database(areas: dict, employers: dict, vacancies: list, dbname: str, params: dict):
     """ Save data to database """
     try:
         logger.info('Starting to save data to the database')
 
-        with psycopg2.connect(**params) as conn:
+        with psycopg2.connect(dbname=dbname, **params) as conn:
             conn.autocommit = True
             with conn.cursor() as cur:
 
