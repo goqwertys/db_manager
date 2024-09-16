@@ -23,16 +23,33 @@ def create_database(database_name: str, params: dict):
         logger.info(f"Starting creation of database '{database_name}'")
 
         # Connect to the default 'postgres' database to create the new database
-        with psycopg2.connect(dbname='postgres', **params) as conn:
-            conn.autocommit = True
-            with conn.cursor() as cur:
-                # Drop the database if it already exists
-                logger.info(f"Dropping database '{database_name}' if it exists")
-                cur.execute(f'DROP DATABASE IF EXISTS {database_name};')
+        # with psycopg2.connect(dbname='postgres', **params) as conn:
+        #     conn.autocommit = True
+        #     with conn.cursor() as cur:
+        #         # Drop the database if it already exists
+        #         logger.info(f"Dropping database '{database_name}' if it exists")
+        #         cur.execute(f'DROP DATABASE IF EXISTS {database_name};')
+        #
+        #         # Create the new database
+        #         logger.info(f"Creating database '{database_name}'")
+        #         cur.execute(f'CREATE DATABASE {database_name};')
 
-                # Create the new database
-                logger.info(f"Creating database '{database_name}'")
-                cur.execute(f'CREATE DATABASE {database_name};')
+        # Connect to the default 'postgres' database to create the new database
+        conn = psycopg2.connect(dbname='postgres', **params)
+        conn.autocommit = True
+        cur = conn.cursor()
+
+        # Drop the database if it already exists
+        logger.info(f"Dropping database '{database_name}' if it exists")
+        cur.execute(f'DROP DATABASE IF EXISTS {database_name};')
+
+        # Create the new database
+        logger.info(f"Creating database '{database_name}'")
+        cur.execute(f'CREATE DATABASE {database_name};')
+
+        # Close the connection to the default 'postgres' database
+        cur.close()
+        conn.close()
 
         # Connect to the newly created database
         with psycopg2.connect(dbname=database_name, **params) as conn:
