@@ -151,18 +151,20 @@ class HHAPIClient(APIClient):
             logger.debug(f'Getting vacancy info from {vacancy}')
             logger.debug(f"Getting vacancy id {int(vacancy.get('id'))}")
             logger.debug(f"Getting vacancy name {vacancy.get('name')}")
-            logger.debug(f"Getting vacancy area id {vacancy.get('area_id')}")
-            logger.debug(f"Getting vacancy salary {vacancy.get('salary', {'from': 0}).get('from')}")
+            logger.debug(f"Getting vacancy area id {vacancy.get('area', {}).get('id')}")
+            salary = vacancy.get('salary', dict())
+            salary_from = salary.get('from', 0)
+            logger.debug(f"Getting vacancy salary {salary_from}")
             logger.debug(f"Getting vacancy employer {vacancy.get('employer').get('id')}")
-            logger.debug(f"Getting vacancy employer {vacancy.get('url')}")
+            logger.debug(f"Getting vacancy url {vacancy.get('url')}")
 
             vacancies_list.append(
                 {
                     'id': int(vacancy.get('id')),
                     'name': vacancy.get('name'),
                     'area_id': int(vacancy.get('area', {'id': None}).get('id')),
-                    'salary': vacancy.get('salary', {'from': 0}).get('from'),
-                    'employer_id': id(vacancy.get('employer').get('id')),
+                    'salary': salary_from,
+                    'employer_id': int(vacancy.get('employer').get('id')),
                     'url': vacancy.get('url')
                 }
             )
