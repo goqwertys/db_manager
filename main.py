@@ -74,7 +74,7 @@ def main() -> bool:
 
 
     except Exception as e:
-        logger.error(f'An error has occured: {e}')
+        logger.error(f'An error has occurred: {e}')
         return False
 
     while True:
