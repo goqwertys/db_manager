@@ -38,9 +38,26 @@ class DBManager(ABSManager):
 
     def get_all_vacancies(self):
         """ Returns a list of all vacancies with the company name, job title and salary, and a link to the vacancy."""
+        self.cur.execute(
+            """
+            SELECT e.name AS employer_name, v.vacancy_name, v.salary, a.name AS area_name, v.url
+            FROM vacancies v
+            INNER JOIN employers e USING (employer_id)
+            INNER JOIN areas a ON v.vacancy_area = a.area_id
+            ORDER BY v.salary DESC
+            """
+        )
+        return self.cur.fetchall()
 
     def get_avg_salary(self):
         """ Returns average salary by vacancies """
+        self.cur.execute(
+            """
+            SELECT AVG(salary)
+            FROM vacancies
+            """
+        )
+        self.cur.fetchall()
 
     def get_vacancies_with_higher_salary(self):
         """ Returns a list of all vacancies where the salary is higher than the average for all vacancies """
