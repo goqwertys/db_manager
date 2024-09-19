@@ -61,6 +61,14 @@ class DBManager(ABSManager):
 
     def get_vacancies_with_higher_salary(self):
         """ Returns a list of all vacancies where the salary is higher than the average for all vacancies """
+        self.cur.execute(
+            """
+            SELECT v.vacancy_name, v.salary
+            FROM vacancies v
+            WHERE salary >= (SELECT AVG(salary) FROM vacancies)
+            """
+        )
+        self.cur.fetchall()
 
     def get_vacancies_with_keyword(self, keyword: str):
         """ Returns a list of all vacancies whose titles contain the words passed to the method, for example python """
