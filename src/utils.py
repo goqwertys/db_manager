@@ -234,3 +234,13 @@ def read_employers_list(file_path: str) -> list[int]:
     except (FileNotFoundError, json.JSONDecodeError, ValueError) as e:
         logger.error(f'An error has occurred: {e}')
         return []
+
+def fixed_width(left_text, right_text, replace_char = '-', width = 30):
+    text_length = len(left_text) + len(right_text)
+
+    fill_length = width - text_length - 2
+    if fill_length >= 0:
+        formated_text = f'{left_text} {replace_char * fill_length} {right_text}'
+        return formated_text
+    else:
+            return f'{left_text} {replace_char} {right_text}'
