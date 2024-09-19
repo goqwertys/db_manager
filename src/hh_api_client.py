@@ -1,5 +1,3 @@
-from math import frexp
-
 import requests
 import logging
 
@@ -26,7 +24,8 @@ class HHAPIClient(APIClient):
         self.headers = {'User-Agent': 'HH-User-Agent'}
         self.params = {
             'per_page': 100,  # Number of vacancies on one page
-            'page': 0  # Initial page
+            'page': 0,  # Initial page
+            'only_with_salary': True  # Load only vacancies with specified salary
         }
         self.data = []
 
@@ -148,13 +147,15 @@ class HHAPIClient(APIClient):
         logger.info('Getting vacancies...')
         vacancies_list = []
         for vacancy in self.data:
-            logger.debug(f'Getting vacancy info from {vacancy}')
-            logger.debug(f"Getting vacancy id {int(vacancy.get('id'))}")
-            logger.debug(f"Getting vacancy name {vacancy.get('name')}")
-            logger.debug(f"Getting vacancy area id {vacancy.get('area', {}).get('id')}")
-            salary = vacancy.get('salary', dict())
-            salary_from = salary.get('from', 0)
+            # logger.debug(f'Getting vacancy info from {vacancy}')
+            # logger.debug(f"Getting vacancy id {int(vacancy.get('id'))}")
+            # logger.debug(f"Getting vacancy name {vacancy.get('name')}")
+            # logger.debug(f"Getting vacancy area id {vacancy.get('area', {}).get('id')}")
+
+            salary = vacancy.get('salary', {})
+            salary_from = salary.get('from')
             logger.debug(f"Getting vacancy salary {salary_from}")
+
             logger.debug(f"Getting vacancy employer {vacancy.get('employer').get('id')}")
             logger.debug(f"Getting vacancy url {vacancy.get('url')}")
 

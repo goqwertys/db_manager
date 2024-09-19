@@ -118,6 +118,7 @@ def save_to_database(areas: dict, employers: dict, vacancies: list, dbname: str,
                 logger.info('Saving areas...')
 
                 for area_id, area_data in areas.items():
+                    logger.debug(f'Load info from {area_id}.\nData: {area_data}')
                     cur.execute(
                         """
                         INSERT INTO areas (area_id, name, url)
@@ -133,10 +134,11 @@ def save_to_database(areas: dict, employers: dict, vacancies: list, dbname: str,
                 logger.info('Saving employers...')
 
                 for employer_id, employer_data in employers.items():
+                    logger.debug(f'Load info from {employer_id}.\nData: {employer_data}')
                     cur.execute(
                         """
-                        INSERT INTO employers (employer_id, employer_name, employer_area, url)
-                        VALUES (%s, %s, %s, %s, %s)
+                        INSERT INTO employers (employer_id, employer_name, url, open_vacancies)
+                        VALUES (%s, %s, %s, %s)
                         """,
                         (
                             employer_id,
@@ -149,6 +151,7 @@ def save_to_database(areas: dict, employers: dict, vacancies: list, dbname: str,
                 logger.info('Saving vacancies...')
 
                 for vacancy_item in vacancies:
+                    logger.debug(f'Load info from {vacancy_item.get('id')}.\nData: {vacancy_item}')
                     cur.execute(
                         """
                         INSERT INTO vacancies (vacancy_id, vacancy_name, vacancy_area, salary, employer_id, vacancy_url)
@@ -169,7 +172,7 @@ def save_to_database(areas: dict, employers: dict, vacancies: list, dbname: str,
                 cur.execute(
                     """
                     UPDATE employers
-                    SET open vacancies = subquery.vacancy_count
+                    SET open_vacancies = subquery.vacancy_count
                     FROM (
                         SELECT employer_id, COUNT (*) as vacancy_count
                         FROM vacancies
