@@ -38,3 +38,6 @@
     ```
 <p>The program will download vacancies of the companies you are interested in and insert them into the database.</p>
 <p>You will then be presented with several options for what data you can see.</p>
+
+## !Important
+**Please try to choose companies with salaries in the same currency. Conversion to one currency is not implemented**
