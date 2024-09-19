@@ -5,7 +5,7 @@ import psycopg2
 import logging
 
 from src.paths import root_join
-from src.config import LOG_LEVEL
+from src.config import LOG_LEVEL, TEXT_WIDTH
 
 # Logger setup
 logger = logging.getLogger(__name__)
@@ -236,6 +236,7 @@ def read_employers_list(file_path: str) -> list[int]:
         return []
 
 def fixed_width(left_text, right_text, replace_char = '-', width = 30):
+    """ Align a line of text to a given width with custom padding """
     text_length = len(left_text) + len(right_text)
 
     fill_length = width - text_length - 2
@@ -244,3 +245,51 @@ def fixed_width(left_text, right_text, replace_char = '-', width = 30):
         return formated_text
     else:
             return f'{left_text} {replace_char} {right_text}'
+
+
+def print_vacancy_info(item, unknown: str):
+    """ Prints vacancy info """
+    print(fixed_width(
+        'ID:',
+        f'{item[0] if item[0] else unknown}',
+        '-',
+        TEXT_WIDTH
+    ))
+    print(fixed_width(
+        'Company:',
+        f'{item[1] if item[1] else unknown}',
+        '-',
+        TEXT_WIDTH
+    ))
+    print(fixed_width(
+        'Area:',
+        f'{item[2] if item[2] else unknown}',
+        '-',
+        TEXT_WIDTH
+    ))
+    print(fixed_width(
+        'Vacancy:',
+        f'{item[3] if item[3] else unknown}',
+        '-',
+        TEXT_WIDTH
+    ))
+    print(fixed_width(
+        'Salary from:',
+        f'{item[4] if item[4] else unknown}',
+        '-',
+        TEXT_WIDTH
+    ))
+    print(fixed_width(
+        'URL:',
+        f'{item[5] if item[5] else unknown}',
+        '-',
+        TEXT_WIDTH
+    ))
+    print('=' * TEXT_WIDTH)
+
+
+def print_header(text: str):
+    """ Prints header """
+    print('~' * TEXT_WIDTH)
+    print(f'{text}'.center(TEXT_WIDTH, '~'))
+    print('~' * TEXT_WIDTH)

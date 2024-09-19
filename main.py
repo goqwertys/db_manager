@@ -4,7 +4,8 @@ from src.config import LOG_LEVEL, TEXT_WIDTH
 from src.db_manager import DBManager
 from src.hh_api_client import HHAPIClient
 from src.paths import root_join
-from src.utils import read_employers_list, read_db_config, create_database, save_to_database, fixed_width
+from src.utils import read_employers_list, read_db_config, create_database, save_to_database, fixed_width, \
+    print_vacancy_info, print_header
 
 # Logger setup
 logger = logging.getLogger(__name__)
@@ -95,13 +96,9 @@ def main() -> bool:
         # Vacancies count
         elif user_input.lower() == 'cvcount':
             vacancies_count = db_manager.get_companies_and_vacancies_count()
-            print('~' * TEXT_WIDTH)
-            print('NUMBER OF VACANCIES FOR EACH EMPLOYER:'.center(TEXT_WIDTH, '~'))
-            print('~' * TEXT_WIDTH)
+            print_header('NUMBER OF VACANCIES FOR EACH EMPLOYER:')
             for item in vacancies_count:
                 print('=' * TEXT_WIDTH)
-
-                # print(item)
 
                 print(fixed_width(
                     f'Employer: {item[0]}',
@@ -115,72 +112,13 @@ def main() -> bool:
         # Getting all
         elif user_input.lower() == 'getall':
             all_vacancies = db_manager.get_all_vacancies()
-            print('~' * TEXT_WIDTH)
-            print('ALL FOUND VACANCIES:'.center(TEXT_WIDTH, '~'))
-            print('~' * TEXT_WIDTH)
+            print_header('ALL FOUND VACANCIES:')
             for item in all_vacancies:
-                print('=' * TEXT_WIDTH)
-
-                # TEMP
-                # print(item)
-
-                # ID [0]
-                print(fixed_width(
-                    'ID:',
-                    f'{item[0] if item[0] else '~Unknown~'}',
-                    '-',
-                    TEXT_WIDTH
-                ))
-
-                # Employer [1]
-                print(fixed_width(
-                    'Company:',
-                    f'{item[1] if item[1] else '~Unknown~'}',
-                    '-',
-                    TEXT_WIDTH
-                ))
-
-                # Area [2]
-                print(fixed_width(
-                    'Area:',
-                    f'{item[2] if item[2] else '~Unknown~'}',
-                    '-',
-                    TEXT_WIDTH
-                ))
-
-                # Vacancy [3]
-                print(fixed_width(
-                    'Vacancy:',
-                    f'{item[3] if item[3] else '~Unknown~'}',
-                    '-',
-                    TEXT_WIDTH
-                ))
-
-                # Salary from [4]
-                print(fixed_width(
-                    'Salary from:',
-                    f'{item[4] if item[4] else '~Unknown~'}',
-                    '-',
-                    TEXT_WIDTH
-                ))
-
-                # URL [5]
-                print(fixed_width(
-                    'URL:',
-                    f'{item[5] if item[5] else '~Unknown~'}',
-                    '-',
-                    TEXT_WIDTH
-                ))
-
-                print('=' * TEXT_WIDTH)
+                print_vacancy_info(item, '~Unknown~')
 
         elif user_input.lower() == 'avgsal':
             avg_sal = db_manager.get_avg_salary()
             print('=' * TEXT_WIDTH)
-
-            # TEMP
-            # print(avg_sal)
-
             print(f'Average salary: {avg_sal}')
             print(fixed_width(
                 'Average salary:',
@@ -188,131 +126,20 @@ def main() -> bool:
                 '-',
                 TEXT_WIDTH
             ))
-
             print('=' * TEXT_WIDTH)
 
         elif user_input.lower() == 'hiavg':
             higher_than_avg_vacancies = db_manager.get_vacancies_with_higher_salary()
-            print('~' * TEXT_WIDTH)
-            print('FOUND VACANCIES WITH SALARY THAT HIGHER THAN AVERAGE:'.center(TEXT_WIDTH, '~'))
-            print('~' * TEXT_WIDTH)
+            print_header('FOUND VACANCIES WITH SALARY THAT HIGHER THAN AVERAGE:')
             for item in higher_than_avg_vacancies:
-                print('=' * TEXT_WIDTH)
-
-                # TEMP
-                # print(item)
-
-                # ID [0]
-                print(fixed_width(
-                    'ID:',
-                    f'{item[0] if item[0] else '~Unknown~'}',
-                    '-',
-                    TEXT_WIDTH
-                ))
-
-                # Employer [1]
-                print(fixed_width(
-                    'Company:',
-                    f'{item[1] if item[1] else '~Unknown~'}',
-                    '-',
-                    TEXT_WIDTH
-                ))
-
-                # Area [2]
-                print(fixed_width(
-                    'Area:',
-                    f'{item[2] if item[2] else '~Unknown~'}',
-                    '-',
-                    TEXT_WIDTH
-                ))
-
-                # Vacancy [3]
-                print(fixed_width(
-                    'Vacancy:',
-                    f'{item[3] if item[3] else '~Unknown~'}',
-                    '-',
-                    TEXT_WIDTH
-                ))
-
-                # Salary from [4]
-                print(fixed_width(
-                    'Salary from:',
-                    f'{item[4] if item[4] else '~Unknown~'}',
-                    '-',
-                    TEXT_WIDTH
-                ))
-
-                # URL [5]
-                print(fixed_width(
-                    'URL:',
-                    f'{item[5] if item[5] else '~Unknown~'}',
-                    '-',
-                    TEXT_WIDTH
-                ))
-
-                print('=' * TEXT_WIDTH)
+                print_vacancy_info(item, '~Unknown~')
 
         elif user_input.lower() == 'keyw':
             keyword = input('Enter your keyword: ')
             keyw_vacancies = db_manager.get_vacancies_with_keyword(keyword)
-            print('~' * TEXT_WIDTH)
-            print('FOUND VACANCIES WITH YOUR KEYWORD:'.center(TEXT_WIDTH, '~'))
-            print('~' * TEXT_WIDTH)
+            print_header('FOUND VACANCIES WITH YOUR KEYWORD:')
             for item in keyw_vacancies:
-                print('=' * TEXT_WIDTH)
-
-                # TEMP
-                print(item)
-
-                # ID [0]
-                print(fixed_width(
-                    'ID:',
-                    f'{item[0] if item[0] else '~Unknown~'}',
-                    '-',
-                    TEXT_WIDTH
-                ))
-
-                # Employer [1]
-                print(fixed_width(
-                    'Company:',
-                    f'{item[1] if item[1] else '~Unknown~'}',
-                    '-',
-                    TEXT_WIDTH
-                ))
-
-                # Area [2]
-                print(fixed_width(
-                    'Area:',
-                    f'{item[2] if item[2] else '~Unknown~'}',
-                    '-',
-                    TEXT_WIDTH
-                ))
-
-                # Vacancy [3]
-                print(fixed_width(
-                    'Vacancy:',
-                    f'{item[3] if item[3] else '~Unknown~'}',
-                    '-',
-                    TEXT_WIDTH
-                ))
-
-                # Salary from [4]
-                print(fixed_width(
-                    'Salary from:',
-                    f'{item[4] if item[4] else '~Unknown~'}',
-                    '-',
-                    TEXT_WIDTH
-                ))
-
-                # URL [5]
-                print(fixed_width(
-                    'URL:',
-                    f'{item[5] if item[5] else '~Unknown~'}',
-                    '-',
-                    TEXT_WIDTH
-                ))
-
-                print('=' * TEXT_WIDTH)
+                print_vacancy_info(item, '~Unknown~')
         else:
             print('Your request is not provided, please enter another request')
 
