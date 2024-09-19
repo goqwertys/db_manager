@@ -25,6 +25,16 @@ class DBManager(ABSManager):
 
     def get_companies_and_vacancies_count(self):
         """ Returns a list of all companies and the number of vacancies for each company"""
+        self.cur.execute(
+            """
+                SELECT employer_name, COUNT(vacancies.employer_id)
+                FROM employers
+                INNER JOIN vacancies USING (employer_id)
+                GROUP BY employer_name
+                ORDER BY COUNT DESC
+            """
+        )
+        return self.cur.fetchall()
 
     def get_all_vacancies(self):
         """ Returns a list of all vacancies with the company name, job title and salary, and a link to the vacancy."""
